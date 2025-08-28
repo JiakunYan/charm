@@ -186,7 +186,9 @@ option(AMPI_MPICH_TESTS    "Enable mpich tests for AMPI" OFF)
 option(DRONE_MODE          "Enable drone mode" OFF)
 option(TASK_QUEUE          "Enable task queue" OFF)
 option(RECONVERSE          "Use the Reconverse communication layer" OFF)
-
+set(AUTOFETCH_RECONVERSE_TAG
+    main
+    CACHE STRING "The tag to fetch for reconverse")
 
 if(TRACING STREQUAL "")
   if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -272,7 +274,6 @@ if(${RECONVERSE})
 else()
   set(CMK_RECONVERSE 0)
 endif()
-
 
 if(${AMPI_MPICH_TESTS})
   add_definitions(-DAMPI_ERRHANDLER_RETURN=1)
@@ -457,7 +458,11 @@ file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/include/cklibs)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib_so)
+if(BUILD_SHARED)
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib_so)
+else()
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+endif()
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 if (NOT CMAKE_INSTALL_PREFIX)
@@ -566,6 +571,14 @@ configure_file(${CMAKE_SOURCE_DIR}/src/scripts/charmc ${CMAKE_BINARY_DIR}/bin @O
 
 # Use charmc to compile/link everything
 set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${CMAKE_BINARY_DIR}/bin/charmc)
+
+set(_original_CMAKE_CXX_LINK_EXECUTABLE ${CMAKE_CXX_LINK_EXECUTABLE})
+set(_original_CMAKE_CXX_CREATE_SHARED_LIBRARY ${CMAKE_CXX_CREATE_SHARED_LIBRARY})
+set(_original_CMAKE_CXX_CREATE_STATIC_LIBRARY ${CMAKE_CXX_CREATE_STATIC_LIBRARY})
+set(_original_CMAKE_C_CREATE_SHARED_LIBRARY ${CMAKE_C_CREATE_SHARED_LIBRARY})
+set(_original_CMAKE_C_CREATE_STATIC_LIBRARY ${CMAKE_C_CREATE_STATIC_LIBRARY})
+set(_original_CMAKE_Fortran_CREATE_SHARED_LIBRARY ${CMAKE_Fortran_CREATE_SHARED_LIBRARY})
+set(_original_CMAKE_Fortran_CREATE_STATIC_LIBRARY ${CMAKE_Fortran_CREATE_STATIC_LIBRARY})
 
 set(CMAKE_CXX_LINK_EXECUTABLE
       "${CMAKE_BINARY_DIR}/bin/charmc <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> <OBJECTS> -o <TARGET> <LINK_LIBRARIES> ${MY_EXTRA_OPTS}")
@@ -1017,6 +1030,7 @@ if(${TARGET} STREQUAL "charm4py")
 else()
   # Check that we are able to build and link an executable
   add_executable(ckhello ${CMAKE_SOURCE_DIR}/tests/charm++/simplearrayhello/hello.C)
+  target_link_libraries(ckhello PRIVATE converse)
   add_dependencies(ckhello ck ckqt conv-static
     converse ckmain
     moduleNDMeshStreamer modulecompletion)

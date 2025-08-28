@@ -1932,7 +1932,8 @@ void _initCharm(int unused_argc, char** argv)
           "recompile Charm++ with different options.\n");
     }
 
-    CmiCheckAffinity();  // check for thread oversubscription
+    // Disable CmiCheckAffinity until it is fixed
+    // CmiCheckAffinity();  // check for thread oversubscription
 
     for (i = 0; i < nMains; i++) /* Create all mainchares */
     {
@@ -1962,7 +1963,8 @@ void _initCharm(int unused_argc, char** argv)
   else
   {
     // check for thread oversubscription
-    CmiCheckAffinity();
+    // Disable CmiCheckAffinity until it is fixed
+    // CmiCheckAffinity();
     // NOTE: this assumes commthreads will not block from this point on
   }
 
