@@ -1667,7 +1667,6 @@ then
   LANG_LIBS=("-L$CHARMLIBSO")
 else
   LANG_LIBS=("-L$CHARMLIB" "-L$CHARMRECONV")
-	[[ -n "$CHARMLIBSO" ]] && LANG_LIBS+=("-L$CHARMLIBSO")
 fi
 
 if [[ -z "$STANDALONE" ]]

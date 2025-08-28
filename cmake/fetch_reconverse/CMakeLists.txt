@@ -25,8 +25,5 @@ set(BUILD_SHARED_LIBS ON CACHE INTERNAL "")
 FetchContent_MakeAvailable(reconverse)
 
 set(BUILD_SHARED_LIBS ${_save_BUILD_SHARED_LIBS} CACHE INTERNAL "")
-# set_property(DIRECTORY "${reconverse_SOURCE_DIR}" PROPERTY RULE_LAUNCH_COMPILE "")
 
-set(reconverse-h-sources
-    ${reconverse_SOURCE_DIR}/include/converse.h PARENT_SCOPE)
-# configure_file(${reconverse_SOURCE_DIR}/include/converse.h ${CMAKE_BINARY_DIR}/include/ COPYONLY)
+configure_file(${reconverse_SOURCE_DIR}/include/converse.h ${CMAKE_BINARY_DIR}/include/ COPYONLY)

@@ -233,46 +233,6 @@ file(WRITE ${CMAKE_BINARY_DIR}/include/topomanager_config.h "// empty\n" )
     # ${all-ci-outputs}
 # )
 # add_dependencies(converse hwloc)
-# include(FetchContent)
-# FetchContent_Declare(
-#     reconverse
-#     GIT_REPOSITORY git@github.com:charmplusplus/reconverse.git
-#     GIT_TAG ${AUTOFETCH_RECONVERSE_TAG})
-# # Set cmake variables for reconverse
-# set(_save_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
-# set(BUILD_SHARED_LIBS ON CACHE INTERNAL "")
-
-# set(_save_CMAKE_CXX_LINK_EXECUTABLE ${CMAKE_CXX_LINK_EXECUTABLE})
-# set(_save_CMAKE_CXX_CREATE_SHARED_LIBRARY ${CMAKE_CXX_CREATE_SHARED_LIBRARY})
-# set(_save_CMAKE_CXX_CREATE_STATIC_LIBRARY ${CMAKE_CXX_CREATE_STATIC_LIBRARY})
-# set(_save_CMAKE_C_CREATE_SHARED_LIBRARY ${CMAKE_C_CREATE_SHARED_LIBRARY})
-# set(_save_CMAKE_C_CREATE_STATIC_LIBRARY ${CMAKE_C_CREATE_STATIC_LIBRARY})
-# set(_save_CMAKE_Fortran_CREATE_SHARED_LIBRARY ${CMAKE_Fortran_CREATE_SHARED_LIBRARY})
-# set(_save_CMAKE_Fortran_CREATE_STATIC_LIBRARY ${CMAKE_Fortran_CREATE_STATIC_LIBRARY})
-
-# set(CMAKE_CXX_LINK_EXECUTABLE ${_original_CMAKE_CXX_LINK_EXECUTABLE})
-# set(CMAKE_CXX_CREATE_SHARED_LIBRARY ${_original_CMAKE_CXX_CREATE_SHARED_LIBRARY})
-# set(CMAKE_CXX_CREATE_STATIC_LIBRARY ${_original_CMAKE_CXX_CREATE_STATIC_LIBRARY})
-# set(CMAKE_C_CREATE_SHARED_LIBRARY ${_original_CMAKE_C_CREATE_SHARED_LIBRARY})
-# set(CMAKE_C_CREATE_STATIC_LIBRARY ${_original_CMAKE_C_CREATE_STATIC_LIBRARY})
-# set(CMAKE_Fortran_CREATE_SHARED_LIBRARY ${_original_CMAKE_Fortran_CREATE_SHARED_LIBRARY})
-# set(CMAKE_Fortran_CREATE_STATIC_LIBRARY ${_original_CMAKE_Fortran_CREATE_STATIC_LIBRARY})
-
-# FetchContent_MakeAvailable(reconverse)
-# set_property(DIRECTORY "${reconverse_SOURCE_DIR}" PROPERTY RULE_LAUNCH_COMPILE "")
-
-# set(CMAKE_CXX_LINK_EXECUTABLE ${_save_CMAKE_CXX_LINK_EXECUTABLE})
-# set(CMAKE_CXX_CREATE_SHARED_LIBRARY ${_save_CMAKE_CXX_CREATE_SHARED_LIBRARY})
-# set(CMAKE_CXX_CREATE_STATIC_LIBRARY ${_save_CMAKE_CXX_CREATE_STATIC_LIBRARY})
-# set(CMAKE_C_CREATE_SHARED_LIBRARY ${_save_CMAKE_C_CREATE_SHARED_LIBRARY})
-# set(CMAKE_C_CREATE_STATIC_LIBRARY ${_save_CMAKE_C_CREATE_STATIC_LIBRARY})
-# set(CMAKE_Fortran_CREATE_SHARED_LIBRARY ${_save_CMAKE_Fortran_CREATE_SHARED_LIBRARY})
-# set(CMAKE_Fortran_CREATE_STATIC_LIBRARY ${_save_CMAKE_Fortran_CREATE_STATIC_LIBRARY})
-
-# set(BUILD_SHARED_LIBS ${_save_BUILD_SHARED_LIBS_OLD} CACHE INTERNAL "")
-
-# set(reconverse-h-sources
-    # ${reconverse_SOURCE_DIR}/include/converse.h)
 
 add_library(charm_cxx_utils STATIC
     ${conv-util-cxx-sources})
@@ -291,7 +251,6 @@ target_link_libraries(converse INTERFACE
     reconverse
     topomanager
     charm_cxx_utils
-    # hwloc
 )
 
 #file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/include/comm_backend)
@@ -303,8 +262,6 @@ foreach (filename
 
 endforeach()
 
-message("reconverse-h-sources: ${reconverse-h-sources}")
-
 foreach(filename
     ${conv-core-h-sources}
     ${conv-ccs-h-sources}
@@ -312,7 +269,6 @@ foreach(filename
     ${conv-util-h-sources}
     ${conv-ldb-h-sources}
     ${tmgr-h-sources}
-    ${reconverse-h-sources}
 )
     configure_file(${filename} ${CMAKE_BINARY_DIR}/include/ COPYONLY)
 endforeach()
