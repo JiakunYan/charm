@@ -186,9 +186,6 @@ option(AMPI_MPICH_TESTS    "Enable mpich tests for AMPI" OFF)
 option(DRONE_MODE          "Enable drone mode" OFF)
 option(TASK_QUEUE          "Enable task queue" OFF)
 option(RECONVERSE          "Use the Reconverse communication layer" OFF)
-set(AUTOFETCH_RECONVERSE_TAG
-    main
-    CACHE STRING "The tag to fetch for reconverse")
 
 if(TRACING STREQUAL "")
   if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -472,6 +469,12 @@ endif()
 if (NOT CMAKE_BUILD_TYPE)
     message(STATUS "${PROJECT_NAME}: No build type selected, default to Release")
     set(CMAKE_BUILD_TYPE "Release")
+endif()
+
+if(RECONVERSE)
+  # This needs to be include before we set charmc as the linker
+  # but after CMAKE_LIBRARY_OUTPUT_DIRECTORY has been set
+  add_subdirectory(cmake/fetch_reconverse)
 endif()
 
 if (NOT CMK_MEMPOOL_CUTOFFNUM)

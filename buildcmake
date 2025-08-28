@@ -135,7 +135,6 @@ opt_reconverse=1 # fake argument for now
 opt_fetch_reconverse_tag=""
 opt_fetch_reconverse_dir=""
 opt_reconverse_fetch_lci=1
-opt_lci_backend="ibv;ofi"
 opt_refnum_type="unsigned short"
 opt_replay=0
 opt_shrinkexpand=0
@@ -148,6 +147,7 @@ opt_tcp=0
 opt_tracing= #undef
 opt_tracing_commthread=0
 opt_zlib=1
+declare -a opt_cmake_extra_args=()
 
 # default to not building ROMIO on AMPI due to GCC 14 cascade failures
 case "$actual_triplet" in
@@ -365,9 +365,6 @@ function processArgs() {
       --without-reconverse-fetch-lci)
         opt_reconverse_fetch_lci=0
         ;;
-      --with-lci-backend=*)
-        opt_lci_backend=${arg#*=}
-        ;;
       --enable-controlpoint)
         opt_controlpoint=1
         ;;
@@ -481,6 +478,11 @@ function processArgs() {
         ;;
       --incdir=*)
         opt_incdir+=("-I${arg#*=}")
+        ;;
+      --with-cmake-args=*)
+        # Split the value into words (quotes preserved by the shell before this point)
+        read -r -a _vals <<< "${arg#*=}"
+        opt_cmake_extra_args+=("${_vals[@]}")
         ;;
       *)
         echo "*** Note: Adding unknown option '$arg' to compiler flags."
@@ -661,8 +663,8 @@ fi
 if [[ -n "$opt_fetch_reconverse_dir" ]]; then
   CMAKE_EXTRA_ARGS+=(-DFETCHCONTENT_SOURCE_DIR_RECONVERSE="$opt_fetch_reconverse_dir")
 fi
-if [[ -n "opt_lci_backend" ]]; then
-  CMAKE_EXTRA_ARGS+=(-DLCI_NETWORK_BACKENDS="$opt_lci_backend")
+if (( ${#opt_cmake_extra_args[@]} > 0 )); then
+  CMAKE_EXTRA_ARGS+=("${opt_cmake_extra_args[@]}")
 fi
 
 CC=$opt_CC CXX=$opt_CXX FC=$opt_FC cmake "$my_srcdir" \
