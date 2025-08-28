@@ -14,7 +14,7 @@ set(AUTOFETCH_RECONVERSE_TAG
 include(FetchContent)
 FetchContent_Declare(
     reconverse
-    GIT_REPOSITORY git@github.com:charmplusplus/reconverse.git
+    GIT_REPOSITORY https://github.com/charmplusplus/reconverse.git
     GIT_TAG ${AUTOFETCH_RECONVERSE_TAG}
 )
 
